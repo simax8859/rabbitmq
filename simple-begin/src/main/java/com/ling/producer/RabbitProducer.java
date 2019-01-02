@@ -25,14 +25,15 @@ public class RabbitProducer {
         Channel channel=connection.createChannel();//创建信道
         //创建一个type="direct"、持久化的、非自动删除的交换器
         channel.exchangeDeclare(EXCHANGE_NAME,"direct",true,false,null);
-        //创建一个持久化、非排他的、非自动删除的队列
+        //创建一个持久化、非排他的、非自动删除的队列，不带其他的参数
         channel.queueDeclare(QUEUE_NAME,true,false,false,null);
         //将交换器与队列通过路由键绑定
         channel.queueBind(QUEUE_NAME,EXCHANGE_NAME,ROUTING_KEY);
         //发送一条持久化的信息：hello world！
-        String message="Hello World!";
+        String message="test p2p 中文";
+        //MessageProperties.PERSISTENT_TEXT_PLAIN是一个默认的参数
         channel.basicPublish(EXCHANGE_NAME,ROUTING_KEY,MessageProperties.PERSISTENT_TEXT_PLAIN,message.getBytes());
-        //关闭资源
+        //关闭资源，其实关闭connection信道也会自动关闭，但是分两步写结构更好
         channel.close();
         connection.close();
 
